@@ -1,0 +1,86 @@
+
+int red = 7;
+int green = 5;
+int blue = 6;
+
+int power = A4;
+int color = 3;
+
+int initial_color = 0;
+
+void setup() {
+  // put your setup code here, to run once:
+Serial.begin(9600);
+pinMode(red, OUTPUT);
+pinMode(green, OUTPUT);
+pinMode(blue, OUTPUT);
+pinMode(power, INPUT);
+pinMode(color, INPUT);
+
+digitalWrite(red, LOW);
+digitalWrite(green, LOW);
+digitalWrite(blue, LOW);
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+// read button tap
+int color_change = digitalRead(color);
+Serial.print("color change: ");
+Serial.println(color_change);
+
+// read potentiometer value
+int brightness = analogRead(power);
+Serial.print("brightness: ");
+Serial.println(brightness);
+delay(1000);
+
+if (color_change == 1){
+initial_color = initial_color + 1;
+Serial.print("combination: ");
+Serial.println(initial_color);
+}
+
+if(initial_color == 1){
+analogWrite(red, 255);
+analogWrite(green, 0);
+analogWrite(blue, 0);
+}
+
+if(initial_color == 2){
+analogWrite(red, 0);
+analogWrite(green, 255);
+analogWrite(blue, 0);
+}
+
+if(initial_color == 3){
+analogWrite(red, 0);
+analogWrite(green, 0);
+analogWrite(blue, 255);
+}
+
+if(initial_color == 4){
+analogWrite(red, 255);
+analogWrite(green, 255);
+analogWrite(blue, 0);
+}
+
+if(initial_color == 5){
+analogWrite(red, 255);
+analogWrite(green, 0);
+analogWrite(blue, 255);
+}
+
+if(initial_color == 6){
+analogWrite(red, 255);
+analogWrite(green, 255);
+analogWrite(blue, 255);
+}
+
+if(initial_color == 7){
+analogWrite(red, 255);
+analogWrite(green, 255);
+analogWrite(blue, 255);
+}
+
+}
