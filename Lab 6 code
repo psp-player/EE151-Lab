@@ -1,4 +1,3 @@
-
 int red = 7;
 int green = 5;
 int blue = 6;
@@ -33,7 +32,10 @@ Serial.println(color_change);
 int brightness = analogRead(power);
 Serial.print("brightness: ");
 Serial.println(brightness);
-delay(1000);
+
+// convert potentiometer value to analog value
+int calculation = brightness/4;
+delay(100);
 
 if (color_change == 1){
 initial_color = initial_color + 1;
@@ -42,45 +44,50 @@ Serial.println(initial_color);
 }
 
 if(initial_color == 1){
-analogWrite(red, 255);
+analogWrite(red, calculation);
 analogWrite(green, 0);
 analogWrite(blue, 0);
 }
 
 if(initial_color == 2){
 analogWrite(red, 0);
-analogWrite(green, 255);
+analogWrite(green, calculation);
 analogWrite(blue, 0);
 }
 
 if(initial_color == 3){
 analogWrite(red, 0);
 analogWrite(green, 0);
-analogWrite(blue, 255);
+analogWrite(blue, calculation);
 }
 
 if(initial_color == 4){
-analogWrite(red, 255);
-analogWrite(green, 255);
+analogWrite(red, calculation);
+analogWrite(green, calculation);
 analogWrite(blue, 0);
 }
 
 if(initial_color == 5){
-analogWrite(red, 255);
+analogWrite(red, calculation);
 analogWrite(green, 0);
-analogWrite(blue, 255);
+analogWrite(blue, calculation);
 }
 
 if(initial_color == 6){
-analogWrite(red, 255);
-analogWrite(green, 255);
-analogWrite(blue, 255);
+analogWrite(red, 0);
+analogWrite(green, calculation);
+analogWrite(blue, calculation);
 }
 
 if(initial_color == 7){
-analogWrite(red, 255);
-analogWrite(green, 255);
-analogWrite(blue, 255);
+analogWrite(red, calculation);
+analogWrite(green, calculation);
+analogWrite(blue, calculation);
+}
+
+// reset color back to red
+if(initial_color == 8){
+initial_color = 1;  
 }
 
 }
