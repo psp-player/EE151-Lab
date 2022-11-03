@@ -1,0 +1,50 @@
+int m1_pwm = 5;
+int m1_directionccw = 4;
+int m1_directioncw = 3;
+
+int counter = 0;
+
+void setup() {
+  // put your setup code here, to run once:
+  pinMode(m1_pwm, OUTPUT);
+  pinMode(m1_directionccw, OUTPUT);
+  pinMode(m1_directioncw, OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  if(counter == 0){
+  digitalWrite(m1_directionccw, HIGH);
+  digitalWrite(m1_directioncw, LOW);
+  } 
+  // motor off
+  analogWrite(m1_pwm, 0);
+  delay(1000);
+
+  // motor half power
+  analogWrite(m1_pwm, 128);
+  delay(1000);
+
+  // motor full power
+  analogWrite(m1_pwm, 255);
+  delay(1000);
+  counter = counter + 1;
+
+  if(counter == 1){
+  digitalWrite(m1_directionccw, LOW);
+  digitalWrite(m1_directioncw, HIGH);
+  }
+  // motor off
+  analogWrite(m1_pwm, 0);
+  delay(1000);
+
+  // motor half power
+  analogWrite(m1_pwm, 128);
+  delay(1000);
+
+  // motor full power
+  analogWrite(m1_pwm, 255);
+  delay(1000);
+  counter = 0;
+}
