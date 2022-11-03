@@ -1,50 +1,91 @@
+// defines pins numbers
+const int trigPin = 8;
+const int echoPin = 9;
+int red = 7;
+int blue = 2;
+int green = 6;
+
 int m1_pwm = 5;
 int m1_directionccw = 4;
 int m1_directioncw = 3;
-
-int counter = 0;
+// defines variables
+long duration;
+int distance;
 
 void setup() {
-  // put your setup code here, to run once:
+  // signal send and receive pins
+  pinMode(trigPin, OUTPUT); // Sets the trigPin as an Output
+  pinMode(echoPin, INPUT); // Sets the echoPin as an Input
+  pinMode(red, OUTPUT);
   pinMode(m1_pwm, OUTPUT);
-  pinMode(m1_directionccw, OUTPUT);
   pinMode(m1_directioncw, OUTPUT);
+  pinMode(m1_directionccw, OUTPUT);
   Serial.begin(9600);
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  if(counter == 0){
-  digitalWrite(m1_directionccw, HIGH);
-  digitalWrite(m1_directioncw, LOW);
-  } 
-  // motor off
-  analogWrite(m1_pwm, 0);
-  delay(1000);
 
-  // motor half power
-  analogWrite(m1_pwm, 128);
-  delay(1000);
+  // Clears the trigPin
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
 
-  // motor full power
-  analogWrite(m1_pwm, 255);
-  delay(1000);
-  counter = counter + 1;
+  // Sets the trigPin on HIGH state for 10 micro seconds
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
 
-  if(counter == 1){
-  digitalWrite(m1_directionccw, LOW);
+  // Reads the echoPin, returns the sound wave travel time in microseconds
+  duration = pulseIn(echoPin, HIGH);
+
+  // Calculating the distance
+  distance = duration * 0.034 / 2;
+  Serial.print("Distance: ");
+  Serial.println(distance);
+
+  // setting motor to clockwise direction
   digitalWrite(m1_directioncw, HIGH);
+  digitalWrite(m1_directionccw, LOW);
+
+  // using analogWrite for green LED because it is really bright at full power(HIGH)
+  if (distance > 100){
+    // motor at full speed
+    analogWrite(m1_pwm, 255);
+    analogWrite(green, 0);
+    digitalWrite(blue, HIGH);
+    digitalWrite(red, LOW);
   }
-  // motor off
-  analogWrite(m1_pwm, 0);
-  delay(1000);
+  else if (distance > 5 && distance < 100){
+    // motor at half speed
+    analogWrite(m1_pwm, 128);
+    analogWrite(green, 128);
+    digitalWrite(red, LOW);
+    digitalWrite(blue, LOW);
+  }
+  else if (distance <= 5){
+    // stop motor for 1 sec, change direction, motor half speed
+    analogWrite(m1_pwm, 0);
+    delay(1000);
+    while(distance < 5){
+      digitalWrite(m1_directioncw, LOW);
+      digitalWrite(m1_directionccw, HIGH);
+      analogWrite(m1_pwm, 128);
+      digitalWrite(red, HIGH);
+      analogWrite(green, 128);
+      digitalWrite(blue, LOW);
 
-  // motor half power
-  analogWrite(m1_pwm, 128);
-  delay(1000);
+      digitalWrite(trigPin, LOW);
+      delayMicroseconds(2);
+      digitalWrite(trigPin, HIGH);
+      delayMicroseconds(10);
+      digitalWrite(trigPin, LOW);
+      duration = pulseIn(echoPin, HIGH);
+      distance = duration * 0.034 / 2;
+      Serial.print("Distance: ");
+      Serial.println(distance);
 
-  // motor full power
-  analogWrite(m1_pwm, 255);
-  delay(1000);
-  counter = 0;
+      if(distance > 5){
+        break;
+      }
+    }
+  }
 }
