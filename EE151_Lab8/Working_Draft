@@ -1,1 +1,52 @@
+7.1.1 Final Project Requirements
+First specify the involved parties, the project itself, and your goals.
 
+1. Team members (up to 4)
+Evan Tran
+
+2. Division of Labor
+Just me, myself and I
+
+3. Project Name
+Project Dispenser
+
+4. Project inspiration
+I saw many videos during Halloween time of kids taking too much candy because there was a bowl of candy left out with a "take 1 please" sign on it.
+A solution could be to have a wireless dispenser for Halloween candy to make sure a few kids don't steal all the candy.
+I also have a lot of candy at home because there were not many trick-or-treaters this year (seems to be decreasing every year).
+
+5. Project features
+Will be able to dispense candy after receiving IR sensor
+Different buttons will dispense different candy?
+LCD Display to tell the trick-or-treater a nice gesture
+
+6. Intended customer / user
+People who are typically too busy or lazy on Halloween to give out candy manually 
+
+7. Market research
+There are many DIY projects on instructable and other sources, but I have not seen a good marketable Halloween candy dispenser. 
+
+You must also meet some requirements. In particular you must use:
+1. A library, i.e. some software that others wrote
+Ken's Library (for IR sensor)
+
+2. A sensor 
+IR Sensor
+
+3. Some wireless or remote control
+IR Remote
+
+4. A display such as LCD or Serial monitor
+LCD Display
+
+5. A device that was not used in our previous experiments 
+Servo Motor
+
+Lastly in reporting your work I would like
+1. An IEEE article style report under six pages, I recommend using LATEXfor this
+2. Third person, i.e. “we”
+3. Pictures of your set-up
+4. Pictures of your team
+5. A link to your code base, I recommend using GitHub for hosting your files 
+6. Well-documented code base
+7. A link to your presentation video and/or slides, I recommend using YouTube 
