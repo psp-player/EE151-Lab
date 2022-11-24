@@ -1,0 +1,75 @@
+#include <LiquidCrystal.h>
+int tempPin = A0; 
+int motorpwm = 7;
+int motorccw = 8;
+int motorcw = 9;
+int photoresistor = A1;
+
+int lamp = 6;
+// initialize the library with the numbers of the interface pins
+LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
+
+void setup() {
+  Serial.begin(9600);
+
+  // set up the LCD's number of columns and rows:
+  lcd.begin(16, 2);
+  // Print a message to the LCD.
+  lcd.setCursor(13, 0);
+  lcd.print(" F");
+  
+  //Motor
+  pinMode(motorpwm, OUTPUT);
+  pinMode(motorccw, OUTPUT);
+  pinMode(motorcw, OUTPUT);
+  analogWrite(motorpwm, 255);
+
+  //LED
+  pinMode(lamp, OUTPUT);
+}
+
+void loop() {
+  //calculations for temperature
+int tempReading = analogRead(tempPin);
+double tempK = log(10000.0 * ((1024.0 / tempReading - 1)));
+tempK = 1 /(0.001129148 + (0.000234125 + (0.0000000876741 * tempK * tempK ))
+* tempK );
+float tempC = tempK - 273.15;
+float tempF = (tempC * 9.0)/ 5.0 + 32.0;
+
+int lightReading = analogRead(photoresistor);
+Serial.println(lightReading);
+delay(100);
+//held flashlight up to photoresistor, max value around 800 (800 means least resistance)
+//covered photoresistor with finger, lowest value around 128 (128 means max resistance)
+// chincilla needs light around 60% of max resistance, any lower then turn on LED
+
+//800 - 128 = 672, 672 * .6 = 403.2 (60% of 672)
+
+float percentage = (lightReading/672.0) * 100.0;
+if(percentage < 60){
+  digitalWrite(lamp, HIGH);
+}
+else{
+  digitalWrite(lamp, LOW);
+}
+//checks temp, if too high turns on fan (motor)
+if(tempF > 70){
+  digitalWrite(motorcw, HIGH);
+  digitalWrite(motorccw, LOW);
+}
+else{
+  digitalWrite(motorcw, LOW);
+  digitalWrite(motorccw, LOW);
+}
+
+//displays the information on the LCD
+lcd.setCursor(1, 0);
+lcd.print("Temp: ");
+lcd.print(tempF);
+delay(100);
+lcd.setCursor(1,1);
+lcd.print("Bright: ");
+lcd.print(percentage);
+lcd.print("%");
+}
