@@ -30,6 +30,8 @@ There are many DIY projects on instructable and other sources, but I have not se
 You must also meet some requirements. In particular you must use:
 1. A library, i.e. some software that others wrote
 Ken's Library (for IR sensor)
+servo motor library
+lcd display library
 
 2. A sensor 
 IR Sensor
