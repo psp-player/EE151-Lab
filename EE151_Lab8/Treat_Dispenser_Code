@@ -1,0 +1,168 @@
+#include <Servo.h>
+#include <LiquidCrystal.h>
+#include <IRremote.h>
+
+int motorpwm1 = 8;
+int motorccw1 = 7;
+int motorcw1 = 10;
+
+int motorpwm2 = 9;
+int motorccw2 = 12;
+int motorcw2 = 11;
+
+Servo lever;
+
+const int RECV_PIN = 6;
+IRrecv irrecv(RECV_PIN);
+decode_results results;
+unsigned long key_value = 0;
+
+// initialize the library with the numbers of the interface pins
+LiquidCrystal lcd(23, 25, 22, 24, 26, 28);
+
+/*
+ * Typical 16 pin LCD display
+ * (1)  LCD VSS pin to GND
+ * (2)  LCD VDD/VCC to 5V
+ * (3)  LCD V0 (Contrast)10K Pot between 5V and GND
+ * (4)  LCD RS pin to Arduino digital pin 23
+ * (5)  LCD R/W pin to GND
+ * (6)  LCD Enable pin to Arduino digital pin 25
+ * (7)  LCD D0 pin - N/C No Connect
+ * (8)  LCD D1 pin - N/C No Connect
+ * (9)  LCD D2 pin - N/C No Connect
+ * (10) LCD D3 pin - N/C No Connect
+ * (11) LCD D4 pin to Arduino digital pin 22
+ * (12) LCD D5 pin to Arduino digital pin 24
+ * (13) LCD D6 pin to Arduino digital pin 26
+ * (14) LCD D7 pin to Arduino digital pin 28
+ * (15) LCD A pin through a 220 ohm to 5V
+ * (16) LCD K pin to GND
+*/
+
+void setup() {
+  Serial.begin(9600);
+  //servomotor
+  lever.attach(5);
+  //Motor1
+  pinMode(motorpwm1, OUTPUT);
+  pinMode(motorccw1, OUTPUT);
+  pinMode(motorcw1, OUTPUT);
+  analogWrite(motorpwm1, 255);
+    //Motor2
+  pinMode(motorpwm2, OUTPUT);
+  pinMode(motorccw2, OUTPUT);
+  pinMode(motorcw2, OUTPUT);
+  analogWrite(motorpwm2, 255);
+  irrecv.enableIRIn();
+  // set up the LCD's number of columns and rows:
+  lcd.begin(16, 2);
+}
+
+void loop() {
+  analogWrite(motorpwm1, 255);
+  analogWrite(motorpwm2, 255);
+  // put your main code here, to run repeatedly:
+if (irrecv.decode(&results)){
+  if (results.value == 0XFFFFFFFF)
+    results.value = key_value;
+
+    switch(results.value){
+      case 0xFFA25D:
+      Serial.println("CH-");
+      break;
+      case 0xFF629D:
+      Serial.println("CH");
+      break;
+      case 0xFFE21D:
+      Serial.println("CH+");
+      break;
+      case 0xFF22DD:
+      Serial.println("|<<");
+      break;
+      case 0xFF02FD:
+      Serial.println(">>|");
+      break ;  
+      case 0xFFC23D:
+      Serial.println(">|");
+      break ;               
+      case 0xFFE01F:
+      Serial.println("-");
+      break ;  
+      case 0xFFA857:
+      Serial.println("+");
+      break ;  
+      case 0xFF906F:
+      Serial.println("EQ");
+      break ;  
+      case 0xFF6897:
+      Serial.println("0");
+      lcd.setCursor(0,0);
+      lcd.print("");
+      lcd.setCursor(0,1);
+      lcd.print("");
+      break ;  
+      case 0xFF9867:
+      Serial.println("100+");
+      break ;
+      case 0xFFB04F:
+      Serial.println("200+");
+      break ;
+      case 0xFF30CF:
+      Serial.println("1");
+      lever.write(0);
+      break ;
+      case 0xFF18E7:
+      //forward
+      Serial.println("2");
+      digitalWrite(motorcw1, HIGH);
+      digitalWrite(motorccw1, LOW);
+      digitalWrite(motorcw2, LOW);
+      digitalWrite(motorccw2, HIGH);
+      break ;
+      case 0xFF7A85:
+      Serial.println("3");
+      lever.write(90);
+      break ;
+      case 0xFF10EF:
+      //left
+      Serial.println("4");
+      digitalWrite(motorcw1, HIGH);
+      digitalWrite(motorccw1, LOW);
+      break ;
+      case 0xFF38C7:
+      Serial.println("5");
+      digitalWrite(motorcw1, LOW);
+      digitalWrite(motorccw1, LOW);
+      digitalWrite(motorcw2, LOW);
+      digitalWrite(motorccw2, LOW);
+      break ;
+      case 0xFF5AA5:
+      //right
+      Serial.println("6");
+      digitalWrite(motorcw2, LOW);
+      digitalWrite(motorccw2, HIGH);
+      break ;
+      case 0xFF42BD:
+      Serial.println("7");
+      lcd.setCursor(0, 0);
+      lcd.print("Trick or Treat!");
+      break ;
+      case 0xFF4AB5:
+      //reverse
+      Serial.println("8");
+      digitalWrite(motorcw1, LOW);
+      digitalWrite(motorccw1, HIGH);
+      digitalWrite(motorcw2, HIGH);
+      digitalWrite(motorccw2, LOW);
+      break ;
+      case 0xFF52AD:
+      Serial.println("9");
+      lcd.setCursor(0, 1);
+      lcd.print("Happy Halloween!");
+      break ;      
+      }
+      key_value = results.value;
+      irrecv.resume(); 
+  }
+}
